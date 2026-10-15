@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chá de Casa Nova da Brendinha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* Layout: cabeçalho centrado curto, filtro por cômodo, grade de cartões clicáveis (1 coluna no celular) */
+:root {
+  --bg: #fbf7f3;
+  --surface: #fffdfb;
+  --pink-soft: #f9e3e6;
+  --pink: #e9a9b6;
+  --pink-deep: #b8566d;
+  --fg: #3b2a2e;
+  --muted: #8a7479;
+  --line: #f0e0e1;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1f1619; --surface: #2a1d21; --pink-soft: #3b262c; --pink: #d98a9b;
+    --pink-deep: #f0a9b8; --fg: #f6e9eb; --muted: #b69ba1; --line: #3d2a30;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1f1619; --surface: #2a1d21; --pink-soft: #3b262c; --pink: #d98a9b;
+  --pink-deep: #f0a9b8; --fg: #f6e9eb; --muted: #b69ba1; --line: #3d2a30;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+img { max-width: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-inline: 16px;
+  padding-block: 40px 56px;
+}
+.wrap { max-width: 960px; margin-inline: auto; }
+
+header { text-align: center; padding-block: 8px 28px; }
+.hero { display: flex; align-items: center; justify-content: center; gap: clamp(8px, 3vw, 28px); margin-bottom: 18px; }
+.hero-text { min-width: 0; text-align: left; }
+.sticker {
+  display: block; flex: none;
+  width: clamp(120px, 32vw, 250px); height: auto;
+  transform: rotate(-4deg);
+  filter: drop-shadow(0 10px 16px rgba(184, 86, 109, .25));
+}
+.eyebrow {
+  display: inline-block;
+  background: var(--pink-soft);
+  color: var(--pink-deep);
+  font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 999px;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 6.5vw, 4rem);
+  line-height: 1.02;
+  margin: 14px 0 0;
+  text-wrap: balance;
+}
+h1 em { color: var(--pink-deep); font-style: italic; }
+.lead { max-width: 46ch; margin: 0 auto; color: var(--muted); text-wrap: balance; }
+
+.filters {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  margin-block: 8px 28px;
+}
+.chip {
+  font: inherit; font-size: 14px; font-weight: 500;
+  color: var(--fg); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 16px; cursor: pointer;
+}
+.chip:hover { border-color: var(--pink); }
+.chip[aria-pressed="true"] { background: var(--pink-deep); border-color: var(--pink-deep); color: var(--bg); }
+.chip:focus-visible, .card:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+
+.grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.card {
+  display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  color: inherit; text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--pink); box-shadow: 0 8px 22px -14px var(--pink-deep); }
+.thumb {
+  aspect-ratio: 1 / 1; width: 100%; max-width: 100%;
+  border-radius: 12px; background: var(--pink-soft); object-fit: cover; display: block;
+}
+.tag { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--pink-deep); }
+.name { font-size: 18px; font-weight: 600; line-height: 1.25; margin: 0; overflow-wrap: anywhere; }
+.price { font-variant-numeric: tabular-nums; color: var(--pink-deep); font-weight: 700; font-size: 17px; margin: 0; }
+.body { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.cta {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--pink-deep); color: var(--bg);
+  font-weight: 600; font-size: 15px; text-decoration: none;
+  padding: 11px 16px; border-radius: 12px;
+}
+.card:hover .cta { filter: brightness(1.06); }
+.main { display: flex; flex-direction: column; gap: 14px; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+.actions { display: flex; flex-direction: column; gap: 8px; }
+.pick {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--pink-deep); background: transparent;
+  border: 1px solid var(--pink); border-radius: 12px;
+  font-weight: 600; font-size: 14px; text-decoration: none;
+  padding: 9px 16px;
+}
+.pick:hover { background: var(--pink-soft); }
+.main:focus-visible, .pick:focus-visible, .cta:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+.badge {
+  align-self: flex-start;
+  background: var(--pink-soft); color: var(--pink-deep);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+.card.gone { opacity: .6; }
+.card.gone:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.card.gone .thumb { filter: grayscale(1); }
+.card.gone .name, .card.gone .price { text-decoration: line-through; text-decoration-thickness: 1px; }
+.pick { width: 100%; font-family: inherit; cursor: pointer; }
+.ask { margin: 0; font-size: 14px; font-weight: 600; text-align: center; }
+.row { display: flex; gap: 8px; }
+.yes, .no { flex: 1; font: inherit; font-weight: 600; font-size: 15px; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
+.yes { background: var(--pink-deep); color: var(--bg); border: 1px solid var(--pink-deep); }
+.no { background: transparent; color: var(--pink-deep); border: 1px solid var(--pink); }
+.yes:focus-visible, .no:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+button:disabled { opacity: .6; cursor: default; }
+.note { margin: 0; font-size: 13px; color: var(--muted); text-align: center; }
+.cta.off { background: var(--line); color: var(--muted); }
+.card.gone:hover .cta { filter: none; }
+
+footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 40px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="hero">
+      <img class="sticker" src="sticker.png" alt="Brendinha: home sweet home" width="520" height="520">
+      <div class="hero-text">
+        <span class="eyebrow">Lista de presentes</span>
+        <h1>Chá de casa nova da <em>Brendinha</em></h1>
+      </div>
+    </div>
+    <p class="lead">Escolha o presente que mais combina com você e toque em "Ver na Shopee" para ir direto ao produto. Depois de decidir, toque em "Vou dar este" para reservar: o item fica indisponível para todo mundo.</p>
+  </header>
+
+  <nav class="filters" id="filters" aria-label="Filtrar por cômodo"></nav>
+  <main class="grid" id="grid"></main>
+
+  <footer>Valores vistos na Shopee em 14/10/2026; podem mudar na loja.<br>Feito com carinho para a casa nova.</footer>
+</div>
+
+<script>
+/* Para mostrar foto e valor de um item, preencha img (endereço da imagem) e price (ex.: "R$ 49,90").
+   Para marcar um item como já escolhido (indisponível), acrescente gone: true nele. */
+var ITEMS = [
+  { id: "prateleira-de-shampoo", n: "Prateleira de shampoo", c: "Banheiro", u: "https://br.shp.ee/6BrUHmGN", img: "fotos/prateleira-shampoo.jpg", price: "R$ 39,99" },
+  { id: "lixeira-de-banheiro-preta", n: "Lixeira de banheiro preta", c: "Banheiro", u: "https://br.shp.ee/FRbja6Sn", img: "fotos/lixeira-banheiro.jpg", price: "R$ 64,97" },
+  { id: "kit-toalheiro-preto", n: "Kit toalheiro preto", c: "Banheiro", u: "https://br.shp.ee/o28d8x7s", img: "fotos/kit-toalheiro.jpg", price: "R$ 71,86 com cupom" },
+  { id: "kit-lavabo-preto", n: "Kit lavabo preto", c: "Banheiro", u: "https://br.shp.ee/nK9kNWh8", img: "fotos/kit-lavabo.jpg", price: "R$ 46,99" },
+
+  { id: "escorredor-de-prato", n: "Escorredor de prato", c: "Cozinha", u: "https://br.shp.ee/gdDCMuLz", img: "fotos/escorredor-prato.jpg", price: "R$ 60,28 com cupom" },
+  { id: "jogo-de-prato", n: "Jogo de prato", c: "Cozinha", u: "https://br.shp.ee/FydtUVgD", img: "fotos/jogo-prato.jpg", price: "R$ 49,90" },
+  { id: "kit-talheres", n: "Kit talheres", c: "Cozinha", u: "https://br.shp.ee/VbASnmNA", img: "fotos/kit-talheres.jpg", price: "R$ 31,59" },
+  { id: "kit-copos", n: "Kit copos", c: "Cozinha", u: "https://br.shp.ee/jGKfTCiU", img: "fotos/kit-copos.jpg", price: "R$ 43,99" },
+  { id: "kit-2-garrafas-de-geladeira", n: "Kit 2 garrafas de geladeira", c: "Cozinha", u: "https://br.shp.ee/nQHWmJnu", img: "fotos/kit-garrafas.jpg", price: "R$ 53,90" },
+  { id: "kit-10-potes-hermeticos-rosa", n: "Kit 10 potes herméticos rosa", c: "Cozinha", u: "https://br.shp.ee/viJJc44w", img: "fotos/kit-potes.jpg", price: "R$ 42,99" },
+  { id: "jogo-de-cozinha-bege", n: "Jogo de cozinha bege", c: "Cozinha", u: "https://br.shp.ee/Gb6vB7bf", img: "fotos/jogo-cozinha.jpg", price: "R$ 51,99" },
+  { id: "lixeira-de-cozinha", n: "Lixeira de cozinha", c: "Cozinha", u: "https://br.shp.ee/YKnbhM3Q", img: "fotos/lixeira-cozinha.jpg", price: "R$ 78,98" },
+  { id: "kit-de-pia-preto", n: "Kit de pia preto", c: "Cozinha", u: "https://br.shp.ee/ebVQr62i", img: "fotos/kit-pia.jpg", price: "R$ 32,57" },
+  { id: "pano-de-prato-branco-e-cinza", n: "Pano de prato branco e cinza", c: "Cozinha", u: "https://br.shp.ee/2JPCXpCG", img: "fotos/pano-prato.jpg", price: "R$ 34,90 com cupom" },
+
+  { id: "cesto-de-roupa-suja", n: "Cesto de roupa suja", c: "Lavanderia e limpeza", u: "https://br.shp.ee/1pCk4yBt", img: "fotos/cesto-roupa-suja.jpg", price: "R$ 56,26" },
+  { id: "varal-com-aba", n: "Varal com aba", c: "Lavanderia e limpeza", u: "https://br.shp.ee/APJXGGEX", img: "fotos/varal.jpg", price: "R$ 79,90" },
+  { id: "kit-pa-vassoura-e-rodo", n: "Kit pá, vassoura e rodo", c: "Lavanderia e limpeza", u: "https://br.shp.ee/NzMDEdtr", img: "fotos/kit-pa-vassoura-rodo.jpg", price: "R$ 78,90 com cupom" },
+
+  { id: "cabide-de-porta-preto", n: "Cabide de porta preto", c: "Organização", u: "https://br.shp.ee/8PtemNkh", img: "fotos/cabide-porta.jpg", price: "R$ 42,47 com cupom" },
+  { id: "sapateira-preta", n: "Sapateira preta", c: "Organização", u: "https://br.shp.ee/kKZp4LKY", img: "fotos/sapateira.jpg", price: "R$ 20,99" },
+  { id: "kit-2-prateleiras-marrom", n: "Kit 2 prateleiras marrom", c: "Organização", u: "https://br.shp.ee/3tqiveok", img: "fotos/kit-prateleiras.jpg", price: "R$ 29,99" },
+  { id: "prateleira-ondulada", n: "Prateleira ondulada", c: "Organização", u: "https://br.shp.ee/jfWg3v1Q", img: "fotos/prateleira-ondulada.jpg", price: "R$ 69,00" },
+  { id: "cestos-de-bambu-organizadores", n: "Cestos de bambu organizadores", c: "Organização", u: "https://br.shp.ee/F78SHzLS", img: "fotos/cestos-bambu.jpg", price: "R$ 39,99" },
+  { id: "porta-chaves-preto", n: "Porta-chaves preto", c: "Organização", u: "https://br.shp.ee/CL1kdVVq", img: "fotos/porta-chaves.jpg", price: "R$ 26,90" },
+
+  { id: "planta-artificial-jiboia", n: "Planta artificial jiboia", c: "Decoração e luz", u: "https://br.shp.ee/74Dwea4A", img: "fotos/planta-jiboia.jpg", price: "R$ 34,45 com cupom" },
+  { id: "kit-2-lampadas-smart-elgin", n: "Kit 2 lâmpadas smart Elgin", c: "Decoração e luz", u: "https://br.shp.ee/7Yz6tanU", img: "fotos/lampadas-smart.jpg", price: "R$ 76,90" },
+  { id: "kit-2-velas", n: "Kit 2 velas", c: "Decoração e luz", u: "https://br.shp.ee/ZWywnXbe", img: "fotos/velas.jpg", price: "R$ 55,89" },
+  { id: "kit-2-mini-abajur", n: "Kit 2 mini abajur", c: "Decoração e luz", u: "https://br.shp.ee/rDuZkcRG", img: "fotos/mini-abajur.jpg", price: "R$ 47,60" },
+  { id: "pendente-luminaria-palha", n: "Pendente luminária palha", c: "Decoração e luz", u: "https://br.shp.ee/2czyW6vq", img: "fotos/pendente-palha.jpg", price: "R$ 72,99" },
+  { id: "luminaria-japonesa-branca", n: "Luminária japonesa branca", c: "Decoração e luz", u: "https://br.shp.ee/ZB3gxf2x", img: "fotos/luminaria-japonesa.jpg", price: "R$ 56,00" },
+
+  { id: "jogo-de-lencol-de-casal-verde-escuro", n: "Jogo de lençol de casal verde escuro", c: "Quarto", u: "https://br.shp.ee/tCsNPcjR", img: "fotos/lencol-verde.jpg", price: "R$ 35,89" },
+  { id: "jogo-de-lencol-de-casal-creme", n: "Jogo de lençol de casal creme", c: "Quarto", u: "https://br.shp.ee/uFiPurMR", img: "fotos/lencol-creme.jpg", price: "R$ 35,89" },
+  { id: "manta-verde-esmeralda", n: "Manta verde esmeralda", c: "Quarto", u: "https://shopee.com.br/Manta-Cobertor-Canelada-Casal-Soft-2-00x1-80-Microfibra-Aveludada-Riscada-Ondulada-i.1797973463.58208764647?extraParams=%7B%22display_model_id%22%3A189620650480%2C%22model_selection_logic%22%3A3%7D", img: "fotos/manta-verde.jpg", price: "R$ 69,90" },
+
+  { id: "ventilador-de-chao-127v", n: "Ventilador de chão 127V", c: "Eletro", u: "https://br.shp.ee/FEGGZgrB", img: "fotos/ventilador.jpg", price: "R$ 121,78 no Pix" }
+];
+
+var CATS = ["Todos"].concat(ITEMS.reduce(function (a, i) { if (a.indexOf(i.c) < 0) a.push(i.c); return a; }, []));
+var current = "Todos";
+var grid = document.getElementById("grid");
+var filters = document.getElementById("filters");
+
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text) e.textContent = text;
+  return e;
+}
+
+var API_URL = "https://script.google.com/macros/s/AKfycbyD1gKWuf4sCKAAOSYVSkCd-unsLMC4G4iBEsSbMWeF7N4jY_IJd4QFwsQoogk7Nv-e/exec"; /* endereço do Apps Script (termina em /exec) */
+var taken = {};
+var confirming = null;
+var busy = null;
+var notice = {};
+
+function isGone(i) { return !!(i.gone || taken[i.id]); }
+
+function api(params) {
+  var q = Object.keys(params).map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
+  return fetch(API_URL + (API_URL.indexOf("?") < 0 ? "?" : "&") + q + "&t=" + Date.now()).then(function (r) { return r.json(); });
+}
+
+function applyTaken(list) {
+  var m = {};
+  (list || []).forEach(function (id) { m[id] = true; });
+  taken = m;
+}
+
+function refresh() {
+  if (!API_URL) return;
+  api({ action: "list" }).then(function (d) {
+    if (!d || !d.taken) return;
+    applyTaken(d.taken);
+    if (!confirming && !busy) { renderFilters(); renderGrid(); }
+  }).catch(function () {});
+}
+
+function claim(i) {
+  busy = i.id;
+  renderGrid();
+  api({ action: "claim", id: i.id }).then(function (d) {
+    if (!d || !d.taken) throw new Error("resposta inesperada");
+    applyTaken(d.taken);
+    notice[i.id] = d.ok ? "" : "Outra pessoa acabou de escolher este item.";
+  }).catch(function () {
+    notice[i.id] = "Não deu para confirmar agora. Tente de novo.";
+  }).then(function () {
+    busy = null; confirming = null;
+    renderFilters(); renderGrid();
+  });
+}
+
+function renderFilters() {
+  filters.textContent = "";
+  CATS.forEach(function (c) {
+    var count = ITEMS.filter(function (i) { return !isGone(i) && (c === "Todos" || i.c === c); }).length;
+    var b = el("button", "chip", c + " (" + count + ")");
+    b.type = "button";
+    b.setAttribute("aria-pressed", c === current ? "true" : "false");
+    b.addEventListener("click", function () { current = c; renderFilters(); renderGrid(); });
+    filters.appendChild(b);
+  });
+}
+
+function externalLink(cls, href, text) {
+  var a = el("a", cls, text);
+  a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer";
+  return a;
+}
+
+function button(cls, text, onClick, disabled) {
+  var b = el("button", cls, text);
+  b.type = "button";
+  b.disabled = !!disabled;
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+function renderGrid() {
+  grid.textContent = "";
+  ITEMS.map(function (i, idx) { return { i: i, idx: idx }; })
+    .filter(function (r) { return current === "Todos" || r.i.c === current; })
+    .sort(function (a, b) { return (isGone(a.i) ? 1 : 0) - (isGone(b.i) ? 1 : 0) || a.idx - b.idx; })
+    .forEach(function (r) {
+      var i = r.i, gone = isGone(i);
+      var card = el("article", gone ? "card gone" : "card");
+      var main = gone ? el("div", "main") : externalLink("main", i.u);
+      if (!gone) main.setAttribute("aria-label", i.n + ", abrir na Shopee");
+      if (i.img) {
+        var im = el("img", "thumb");
+        im.src = i.img; im.alt = i.n; im.loading = "lazy";
+        main.appendChild(im);
+      }
+      var body = el("div", "body");
+      if (gone) body.appendChild(el("span", "badge", "Já escolhido"));
+      body.appendChild(el("span", "tag", i.c));
+      body.appendChild(el("h2", "name", i.n));
+      if (i.price) body.appendChild(el("p", "price", i.price));
+      main.appendChild(body);
+      card.appendChild(main);
+
+      var actions = el("div", "actions");
+      if (gone) {
+        actions.appendChild(el("span", "cta off", "Indisponível"));
+        if (notice[i.id]) actions.appendChild(el("p", "note", notice[i.id]));
+      } else if (confirming === i.id) {
+        actions.appendChild(el("p", "ask", "Tem certeza que deseja selecionar esse produto?"));
+        var row = el("div", "row");
+        row.appendChild(button("yes", busy === i.id ? "Confirmando..." : "Sim", function () { claim(i); }, busy === i.id));
+        row.appendChild(button("no", "Não", function () { confirming = null; renderGrid(); }, busy === i.id));
+        actions.appendChild(row);
+      } else {
+        actions.appendChild(externalLink("cta", i.u, "Ver na Shopee →"));
+        if (API_URL) actions.appendChild(button("pick", "Vou dar este", function () { notice[i.id] = ""; confirming = i.id; renderGrid(); }));
+        if (notice[i.id]) actions.appendChild(el("p", "note", notice[i.id]));
+      }
+      card.appendChild(actions);
+      grid.appendChild(card);
+    });
+}
+
+renderFilters();
+renderGrid();
+refresh();
+setInterval(refresh, 30000);
+document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+</script>
+
+</body>
+</html>
